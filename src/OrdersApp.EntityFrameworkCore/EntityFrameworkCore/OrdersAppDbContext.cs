@@ -1,9 +1,11 @@
 ﻿using Microsoft.EntityFrameworkCore;
+using OrdersApp.Entities;
 using Volo.Abp.AuditLogging.EntityFrameworkCore;
 using Volo.Abp.BackgroundJobs.EntityFrameworkCore;
 using Volo.Abp.Data;
 using Volo.Abp.DependencyInjection;
 using Volo.Abp.EntityFrameworkCore;
+using Volo.Abp.EntityFrameworkCore.Modeling;
 using Volo.Abp.FeatureManagement.EntityFrameworkCore;
 using Volo.Abp.Identity;
 using Volo.Abp.Identity.EntityFrameworkCore;
@@ -24,7 +26,9 @@ namespace OrdersApp.EntityFrameworkCore
         ITenantManagementDbContext
     {
         /* Add DbSet properties for your Aggregate Roots / Entities here. */
-        
+        DbSet<Order> Orders { get; set; }
+
+
         #region Entities from the modules
         
         /* Notice: We only implemented IIdentityDbContext and ITenantManagementDbContext
@@ -74,6 +78,14 @@ namespace OrdersApp.EntityFrameworkCore
             builder.ConfigureTenantManagement();
 
             /* Configure your own tables/entities inside here */
+            builder.Entity<Order>(b =>
+            {
+                b.ToTable(OrdersAppConsts.DbTablePrefix + "Orders",
+                    OrdersAppConsts.DbSchema);
+                b.ConfigureByConvention(); //auto configure for the base class props
+            });
+
+
 
             //builder.Entity<YourEntity>(b =>
             //{
