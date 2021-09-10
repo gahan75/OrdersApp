@@ -26,7 +26,9 @@ namespace OrdersApp.EntityFrameworkCore
         ITenantManagementDbContext
     {
         /* Add DbSet properties for your Aggregate Roots / Entities here. */
-        DbSet<Order> Orders { get; set; }
+        public DbSet<Order> Orders { get; set; }
+        public DbSet<Customer> Customers { get; set; }
+        public DbSet<Book> Books { get; set; }
 
 
         #region Entities from the modules
@@ -85,7 +87,21 @@ namespace OrdersApp.EntityFrameworkCore
                 b.ConfigureByConvention(); //auto configure for the base class props
             });
 
+            builder.Entity<Customer>(b =>
+            {
+                b.ToTable(OrdersAppConsts.DbTablePrefix + "Customers",
+                    OrdersAppConsts.DbSchema);
+                b.ConfigureByConvention(); //auto configure for the base class props
+                b.Property(x => x.Name).IsRequired().HasMaxLength(128);
+            });
 
+            builder.Entity<Book>(b =>
+            {
+                b.ToTable(OrdersAppConsts.DbTablePrefix + "Books",
+                    OrdersAppConsts.DbSchema);
+                b.ConfigureByConvention(); //auto configure for the base class props
+                b.Property(x => x.Name).IsRequired().HasMaxLength(128);
+            });
 
             //builder.Entity<YourEntity>(b =>
             //{
